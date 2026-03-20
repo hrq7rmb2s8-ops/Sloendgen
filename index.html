@@ -8,251 +8,118 @@
 <title>Slöndgen 🍺</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap');
+:root{--bg:#1a1200;--surface:#2a1f00;--surface2:#352800;--border:rgba(255,200,50,0.15);--border2:rgba(255,200,50,0.3);--text:#fff8e7;--text2:#c9a84c;--text3:#7a6030;--accent:#f5a623;--accent2:#ffe066;--danger:#ff5533;--radius:16px;--radius-sm:10px;--radius-pill:999px;--font-title:'Fredoka One',cursive;--font-body:'Nunito',sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+.bubbles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.bubble{position:absolute;bottom:-60px;border-radius:50%;background:rgba(245,166,35,0.07);animation:rise linear infinite;}
+@keyframes rise{0%{transform:translateY(0) scale(1);opacity:.6}100%{transform:translateY(-110vh) scale(1.3);opacity:0}}
+#app{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:1.5rem 1rem 5rem;}
+h1{font-family:var(--font-title);font-size:42px;letter-spacing:1px;background:linear-gradient(135deg,#ffe066,#f5a623,#ffb347);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 2px 8px rgba(245,166,35,.4));line-height:1;}
+.subtitle{font-size:13px;color:var(--text2);margin-top:4px;margin-bottom:2rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;}
+.label{font-size:11px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;}
+.card{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:1rem 1.25rem;}
+.sep{height:1px;background:var(--border);margin:1.25rem 0;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:var(--radius-sm);font-size:14px;font-weight:800;cursor:pointer;transition:all .15s;border:none;padding:11px 20px;font-family:var(--font-body);letter-spacing:.02em;}
+.btn:active{transform:scale(.95);}
+.btn-primary{background:linear-gradient(135deg,#f5a623,#e08800);color:#1a1200;box-shadow:0 4px 16px rgba(245,166,35,.35);}
+.btn-primary:hover{box-shadow:0 6px 20px rgba(245,166,35,.5);transform:translateY(-1px);}
+.btn-primary:disabled{opacity:.35;cursor:default;transform:none;box-shadow:none;}
+.btn-ghost{background:var(--surface2);color:var(--text2);border:1px solid var(--border2);}
+.btn-ghost:hover{background:var(--surface);color:var(--text);}
+.btn-sm{padding:6px 12px;font-size:12px;}
+.btn-icon{width:34px;height:34px;padding:0;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;font-family:var(--font-body);}
+.btn-icon:hover{background:var(--surface);color:var(--text);}
+input[type=text],input[type=number]{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-size:14px;padding:9px 12px;outline:none;width:100%;font-family:var(--font-body);font-weight:600;transition:border-color .15s;}
+input[type=text]:focus,input[type=number]:focus{border-color:var(--accent);}
 
-:root {
-  --bg: #1a1200;
-  --surface: #2a1f00;
-  --surface2: #352800;
-  --border: rgba(255,200,50,0.15);
-  --border2: rgba(255,200,50,0.3);
-  --text: #fff8e7;
-  --text2: #c9a84c;
-  --text3: #7a6030;
-  --accent: #f5a623;
-  --accent2: #ffe066;
-  --beer: #f5a623;
-  --beer-foam: #fff8e7;
-  --beer-dark: #c07000;
-  --danger: #ff5533;
-  --green: #5cdb95;
-  --radius: 16px;
-  --radius-sm: 10px;
-  --radius-pill: 999px;
-  --font-title: 'Fredoka One', cursive;
-  --font-body: 'Nunito', sans-serif;
-}
+/* SETUP */
+.player-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
+.player-row input{flex:1;}
+#add-btn{width:100%;margin-top:4px;border:1px dashed var(--border2);background:transparent;color:var(--text2);border-radius:var(--radius-sm);padding:9px;font-size:13px;cursor:pointer;font-family:var(--font-body);font-weight:700;}
+#add-btn:hover{background:var(--surface2);color:var(--text);}
 
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+/* SCOREBOARD – always vertical */
+.scoreboard{display:flex;flex-direction:column;gap:8px;}
+.score-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .2s;}
+.score-card:hover{border-color:var(--border2);}
+.score-card.active{background:var(--surface);border-color:var(--accent);box-shadow:0 0 16px rgba(245,166,35,.2);}
+.score-card.kicked{opacity:.4;}
+.score-name{font-size:15px;font-weight:800;color:var(--text);flex:1;}
+.score-badge{font-size:10px;font-weight:700;color:#1a1200;background:var(--accent);border-radius:var(--radius-pill);padding:2px 8px;margin-left:6px;vertical-align:middle;}
+.score-num{font-size:22px;font-weight:800;color:var(--accent2);min-width:36px;text-align:right;}
+.score-unit{font-size:11px;color:var(--text3);font-weight:700;}
+.edit-sips{width:60px;font-size:14px;text-align:center;padding:5px 8px;}
+.kick-btn{padding:4px 10px;font-size:11px;border-radius:var(--radius-pill);background:rgba(255,85,51,.1);color:var(--danger);border:1px solid rgba(255,85,51,.25);cursor:pointer;font-family:var(--font-body);font-weight:800;white-space:nowrap;flex-shrink:0;}
+.kick-btn:hover{background:rgba(255,85,51,.2);}
 
-body {
-  font-family: var(--font-body);
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  overflow-x: hidden;
-}
+/* BEER */
+.beer-display{display:flex;align-items:flex-end;justify-content:center;padding:.75rem 0 .25rem;}
+.beer-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.beer-label{font-size:13px;font-weight:800;color:var(--text2);}
+.glass-svg{filter:drop-shadow(0 4px 12px rgba(245,166,35,.25));}
 
-/* ── BG BUBBLES ── */
-.bubbles {
-  position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
-}
-.bubble {
-  position: absolute; bottom: -60px; border-radius: 50%;
-  background: rgba(245,166,35,0.08);
-  animation: rise linear infinite;
-}
-@keyframes rise {
-  0%   { transform: translateY(0) scale(1); opacity: 0.6; }
-  100% { transform: translateY(-110vh) scale(1.3); opacity: 0; }
-}
+/* DICE */
+.dice-area{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;padding:1.25rem 0;}
+.die{width:66px;height:66px;border-radius:var(--radius);border:2px solid var(--border2);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:32px;user-select:none;transition:all .2s;box-shadow:inset 0 2px 0 rgba(255,255,255,.05);}
+.die.hl{border-color:var(--accent);background:var(--surface);box-shadow:0 0 14px rgba(245,166,35,.4),inset 0 2px 0 rgba(255,255,255,.05);transform:scale(1.08);}
+.die.rolling{animation:bigroll 3s cubic-bezier(.36,.07,.19,.97);}
+.die.hidden{opacity:0;transform:scale(.6);}
+.die.reveal{animation:dreveal .4s ease forwards;}
+@keyframes bigroll{0%{transform:rotate(0) scale(1);}8%{transform:rotate(-28deg) scale(1.18);}18%{transform:rotate(22deg) scale(1.22);}28%{transform:rotate(-18deg) scale(1.15);}38%{transform:rotate(20deg) scale(1.2);}48%{transform:rotate(-12deg) scale(1.12);}58%{transform:rotate(15deg) scale(1.16);}68%{transform:rotate(-8deg) scale(1.08);}80%{transform:rotate(5deg) scale(1.04);}90%{transform:rotate(-3deg) scale(1.02);}100%{transform:rotate(0) scale(1);}}
+@keyframes dreveal{0%{opacity:0;transform:scale(.5) rotate(-20deg);}60%{transform:scale(1.15) rotate(5deg);}100%{opacity:1;transform:scale(1) rotate(0);}}
 
-#app {
-  position: relative; z-index: 1;
-  max-width: 680px; margin: 0 auto;
-  padding: 1.5rem 1rem 5rem;
-}
+/* ROUND SUMMARY */
+.summary-player-row{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
+.summary-player-row:last-child{border-bottom:none;}
+.summary-left{text-align:right;min-width:56px;flex-shrink:0;}
+.summary-total{font-size:32px;font-weight:800;color:var(--accent);line-height:1;}
+.summary-unit{font-size:11px;color:var(--text3);font-weight:700;margin-top:2px;}
+.summary-divider{width:2px;background:var(--border2);border-radius:2px;align-self:stretch;flex-shrink:0;}
+.summary-right{flex:1;}
+.summary-name{font-size:16px;font-weight:800;color:var(--accent2);margin-bottom:3px;}
+.summary-reason{font-size:13px;color:var(--text2);font-weight:600;line-height:1.5;}
 
-/* ── TYPOGRAPHY ── */
-h1 {
-  font-family: var(--font-title);
-  font-size: 42px; letter-spacing: 1px;
-  background: linear-gradient(135deg, #ffe066, #f5a623, #ffb347);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 2px 8px rgba(245,166,35,0.4));
-  line-height: 1;
-}
-.subtitle { font-size: 13px; color: var(--text2); margin-top: 4px; margin-bottom: 2rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
-.label { font-size: 11px; font-weight: 800; color: var(--text2); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+/* RESULT */
+.result-item{font-size:14px;line-height:1.7;margin-bottom:3px;font-weight:600;}
+.result-item.bold{font-weight:800;color:var(--accent2);}
+.result-item.warn{color:var(--danger);font-weight:800;}
 
-/* ── CARDS ── */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: var(--radius);
-  padding: 1rem 1.25rem;
-}
-.sep { height: 1px; background: var(--border); margin: 1.25rem 0; }
+/* DISTRIBUTE */
+.dist-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.dist-row label{flex:1;font-size:14px;font-weight:700;}
+.dist-num{width:70px;text-align:center;}
+.dist-remaining{font-size:13px;color:var(--text2);flex:1;font-weight:700;}
 
-/* ── BUTTONS ── */
-.btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  border-radius: var(--radius-sm); font-size: 14px; font-weight: 800;
-  cursor: pointer; transition: all .15s; border: none; padding: 11px 20px;
-  font-family: var(--font-body); letter-spacing: 0.02em;
-}
-.btn:active { transform: scale(0.95); }
-.btn-primary {
-  background: linear-gradient(135deg, #f5a623, #e08800);
-  color: #1a1200;
-  box-shadow: 0 4px 16px rgba(245,166,35,0.35);
-}
-.btn-primary:hover { box-shadow: 0 6px 20px rgba(245,166,35,0.5); transform: translateY(-1px); }
-.btn-primary:disabled { opacity: 0.35; cursor: default; transform: none; box-shadow: none; }
-.btn-ghost {
-  background: var(--surface2); color: var(--text2);
-  border: 1px solid var(--border2);
-}
-.btn-ghost:hover { background: var(--surface); color: var(--text); }
-.btn-sm { padding: 6px 12px; font-size: 12px; }
-.btn-icon {
-  width: 34px; height: 34px; padding: 0; border-radius: var(--radius-sm);
-  background: var(--surface2); border: 1px solid var(--border);
-  color: var(--text2); font-size: 16px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: background .15s; font-family: var(--font-body);
-}
-.btn-icon:hover { background: var(--surface); color: var(--text); }
+/* VOTE */
+.vote-chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 6px;}
+.chip{padding:6px 14px;border-radius:var(--radius-pill);font-size:13px;font-weight:800;border:1px solid var(--border2);background:transparent;color:var(--text);cursor:pointer;transition:all .15s;font-family:var(--font-body);}
+.chip.sel{background:var(--accent);color:#1a1200;border-color:var(--accent);}
+.chip:hover:not(.sel){background:var(--surface2);}
+.vote-status{font-size:13px;color:var(--text2);font-weight:700;}
+.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:.25rem;}
+.top-bar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;}
 
-/* ── INPUTS ── */
-input[type=text], input[type=number] {
-  background: var(--surface2); border: 1px solid var(--border2);
-  border-radius: var(--radius-sm); color: var(--text);
-  font-size: 14px; padding: 9px 12px; outline: none; width: 100%;
-  font-family: var(--font-body); font-weight: 600;
-  transition: border-color .15s;
-}
-input[type=text]:focus, input[type=number]:focus { border-color: var(--accent); }
+/* KICK MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center;z-index:200;padding:1rem;}
+.modal{background:var(--surface);border:1px solid rgba(255,85,51,.4);border-radius:var(--radius);padding:1.75rem 1.5rem;max-width:340px;width:100%;text-align:center;}
+.modal h3{font-family:var(--font-title);font-size:28px;color:var(--danger);margin-bottom:.5rem;}
+.modal p{font-size:15px;color:var(--text2);font-weight:600;line-height:1.6;margin-bottom:1.5rem;}
+.modal-btns{display:flex;gap:10px;justify-content:center;}
 
-/* ── SETUP ── */
-.player-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
-.player-row input { flex: 1; }
-#add-btn {
-  width: 100%; margin-top: 4px;
-  border: 1px dashed var(--border2); background: transparent;
-  color: var(--text2); border-radius: var(--radius-sm);
-  padding: 9px; font-size: 13px; cursor: pointer; font-family: var(--font-body); font-weight: 700;
-}
-#add-btn:hover { background: var(--surface2); color: var(--text); }
-
-/* ── SCOREBOARD ── */
-.scoreboard { display: grid; gap: 8px; }
-.score-card {
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 10px 14px;
-  display: flex; align-items: center; justify-content: space-between; gap: 8px;
-  cursor: pointer; transition: all .2s;
-}
-.score-card:hover { border-color: var(--border2); }
-.score-card.active {
-  background: var(--surface); border-color: var(--accent);
-  box-shadow: 0 0 16px rgba(245,166,35,0.2);
-}
-.score-name { font-size: 14px; font-weight: 800; color: var(--text); }
-.score-badge {
-  font-size: 10px; font-weight: 700; color: #1a1200;
-  background: var(--accent); border-radius: var(--radius-pill);
-  padding: 2px 8px; margin-left: 6px; vertical-align: middle;
-}
-.score-right { display: flex; align-items: center; gap: 8px; }
-.score-num { font-size: 22px; font-weight: 800; color: var(--accent2); min-width: 32px; text-align: right; }
-.score-unit { font-size: 11px; color: var(--text3); font-weight: 700; }
-.edit-sips { width: 60px; font-size: 14px; text-align: center; padding: 5px 8px; }
-
-/* ── BEER GLASS DISPLAY ── */
-.beer-display {
-  display: flex; align-items: flex-end; justify-content: center;
-  gap: 1.5rem; padding: 1rem 0 0.5rem;
-}
-.beer-wrap {
-  display: flex; flex-direction: column; align-items: center; gap: 6px;
-}
-.beer-label { font-size: 11px; font-weight: 800; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; }
-.glass-svg { filter: drop-shadow(0 4px 12px rgba(245,166,35,0.25)); }
-
-/* ── DICE ── */
-.dice-area {
-  display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
-  padding: 1.25rem 0;
-}
-.die {
-  width: 66px; height: 66px; border-radius: var(--radius);
-  border: 2px solid var(--border2); background: var(--surface2);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 32px; user-select: none; transition: all .2s;
-  box-shadow: inset 0 2px 0 rgba(255,255,255,0.05);
-}
-.die.hl {
-  border-color: var(--accent); background: var(--surface);
-  box-shadow: 0 0 12px rgba(245,166,35,0.35), inset 0 2px 0 rgba(255,255,255,0.05);
-  transform: scale(1.06);
-}
-.die.rolling { animation: bigroll .8s cubic-bezier(.36,.07,.19,.97); }
-@keyframes bigroll {
-  0%   { transform: rotate(0deg) scale(1); }
-  10%  { transform: rotate(-25deg) scale(1.15); }
-  25%  { transform: rotate(20deg) scale(1.2); }
-  40%  { transform: rotate(-15deg) scale(1.12); }
-  55%  { transform: rotate(18deg) scale(1.18); }
-  70%  { transform: rotate(-10deg) scale(1.1); }
-  85%  { transform: rotate(6deg) scale(1.05); }
-  100% { transform: rotate(0deg) scale(1); }
-}
-
-/* ── RESULT ── */
-.result-box { min-height: 64px; }
-.result-item { font-size: 15px; line-height: 1.7; margin-bottom: 3px; font-weight: 600; }
-.result-item.bold { font-weight: 800; color: var(--accent2); }
-.result-item.warn { color: var(--danger); font-weight: 800; }
-
-/* ── DISTRIBUTE ── */
-.dist-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-.dist-row label { flex: 1; font-size: 14px; font-weight: 700; }
-.dist-num { width: 70px; text-align: center; }
-.dist-remaining { font-size: 13px; color: var(--text2); flex: 1; font-weight: 700; }
-
-/* ── VOTE ── */
-.vote-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 6px; }
-.chip {
-  padding: 6px 14px; border-radius: var(--radius-pill);
-  font-size: 13px; font-weight: 800; border: 1px solid var(--border2);
-  background: transparent; color: var(--text); cursor: pointer;
-  transition: all .15s; font-family: var(--font-body);
-}
-.chip.sel { background: var(--accent); color: #1a1200; border-color: var(--accent); }
-.chip:hover:not(.sel) { background: var(--surface2); }
-.vote-status { font-size: 13px; color: var(--text2); font-weight: 700; }
-
-/* ── CONTROLS ── */
-.controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 0.25rem; }
-
-/* ── TOP BAR ── */
-.top-bar { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.5rem; }
-
-/* ── RULES MODAL ── */
-.overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-  display: flex; align-items: flex-end; justify-content: center; z-index: 100;
-}
-.rules-sheet {
-  background: var(--surface); border-radius: var(--radius) var(--radius) 0 0;
-  border-top: 2px solid var(--border2);
-  padding: 1.5rem 1.25rem 2.5rem; max-height: 82vh; overflow-y: auto;
-  width: 100%; max-width: 680px;
-}
-.rules-sheet h2 { font-family: var(--font-title); font-size: 26px; color: var(--accent); margin-bottom: 1rem; }
-.rule-entry { font-size: 14px; line-height: 1.7; padding: 8px 0; border-bottom: 1px solid var(--border); color: var(--text2); font-weight: 600; }
-.rule-entry strong { color: var(--accent2); font-weight: 800; }
+/* RULES */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:flex-end;justify-content:center;z-index:100;}
+.rules-sheet{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;border-top:2px solid var(--border2);padding:1.5rem 1.25rem 2.5rem;max-height:82vh;overflow-y:auto;width:100%;max-width:680px;}
+.rules-sheet h2{font-family:var(--font-title);font-size:26px;color:var(--accent);margin-bottom:1rem;}
+.rule-entry{font-size:14px;line-height:1.7;padding:8px 0;border-bottom:1px solid var(--border);color:var(--text2);font-weight:600;}
+.rule-entry strong{color:var(--accent2);font-weight:800;}
 </style>
 </head>
 <body>
-
-<!-- Bubbles BG -->
 <div class="bubbles" id="bubbles"></div>
-
 <div id="app">
 
-  <!-- ══ SETUP ══ -->
+  <!-- SETUP -->
   <div id="setup">
     <h1>Slöndgen</h1>
     <p class="subtitle">🍺 Das Würfel-Trinkspiel · 2–8 Spieler</p>
@@ -269,57 +136,40 @@ input[type=text]:focus, input[type=number]:focus { border-color: var(--accent); 
     </div>
   </div>
 
-  <!-- ══ GAME ══ -->
+  <!-- GAME -->
   <div id="game" style="display:none;">
-
     <div class="top-bar">
-      <div>
-        <h1>Slöndgen</h1>
-        <p class="subtitle" id="turn-label">— ist dran</p>
-      </div>
+      <div><h1>Slöndgen</h1><p class="subtitle" id="turn-label">— ist dran</p></div>
       <div style="display:flex;gap:8px;align-items:flex-start;margin-top:4px;">
         <button class="btn btn-ghost btn-sm" onclick="showRules()">Regeln</button>
         <button class="btn btn-ghost btn-sm" onclick="resetGame()">Neu</button>
       </div>
     </div>
 
-    <!-- Scoreboard -->
-    <p class="label">Schluck-Tracker</p>
+    <p class="label">Spieler & Schluck-Tracker</p>
     <div class="scoreboard" id="scoreboard"></div>
-    <p style="font-size:11px;color:var(--text3);margin-top:6px;font-weight:600;">Auf Spieler tippen zum manuellen Bearbeiten</p>
+    <p style="font-size:11px;color:var(--text3);margin-top:6px;font-weight:600;">Auf Spieler tippen zum Bearbeiten</p>
 
     <div class="sep"></div>
 
-    <!-- Beer glass for current throw -->
     <p class="label">Letzter Wurf</p>
-    <div class="beer-display" id="beer-display">
+    <div class="beer-display">
       <div class="beer-wrap">
         <svg class="glass-svg" id="beer-svg" width="80" height="120" viewBox="0 0 80 120">
-          <defs>
-            <clipPath id="glass-clip">
-              <path d="M14,8 L10,110 L70,110 L66,8 Z"/>
-            </clipPath>
-          </defs>
-          <!-- Glass body outline -->
+          <defs><clipPath id="gc"><path d="M14,8 L10,110 L70,110 L66,8 Z"/></clipPath></defs>
           <path d="M14,8 L10,110 L70,110 L66,8 Z" fill="none" stroke="rgba(245,166,35,0.4)" stroke-width="2"/>
-          <!-- Beer fill (animated) -->
-          <rect id="beer-fill" x="10" y="110" width="60" height="0" fill="#f5a623" clip-path="url(#glass-clip)" style="transition: y 0.8s cubic-bezier(.4,0,.2,1), height 0.8s cubic-bezier(.4,0,.2,1);"/>
-          <!-- Foam -->
-          <rect id="beer-foam-rect" x="10" y="110" width="60" height="0" fill="#fff8e7" clip-path="url(#glass-clip)" style="transition: y 0.8s cubic-bezier(.4,0,.2,1), height 0.8s cubic-bezier(.4,0,.2,1); opacity:0.9;"/>
-          <!-- Handle -->
+          <rect id="beer-fill" x="10" y="110" width="60" height="0" fill="#f5a623" clip-path="url(#gc)" style="transition:y 1.2s cubic-bezier(.4,0,.2,1),height 1.2s cubic-bezier(.4,0,.2,1);"/>
+          <rect id="beer-foam" x="10" y="110" width="60" height="0" fill="#fff8e7" clip-path="url(#gc)" style="transition:y 1.2s cubic-bezier(.4,0,.2,1),height 1.2s cubic-bezier(.4,0,.2,1);opacity:.92;"/>
           <path d="M66,30 Q82,30 82,50 Q82,70 66,70" fill="none" stroke="rgba(245,166,35,0.4)" stroke-width="2"/>
-          <!-- Glass shine -->
           <line x1="22" y1="12" x2="18" y2="106" stroke="rgba(255,255,255,0.08)" stroke-width="4"/>
-          <!-- Empty label -->
-          <text id="beer-empty-text" x="40" y="65" text-anchor="middle" font-size="11" fill="rgba(245,166,35,0.3)" font-family="Nunito,sans-serif" font-weight="800">leer</text>
+          <text id="beer-empty" x="40" y="65" text-anchor="middle" font-size="11" fill="rgba(245,166,35,0.3)" font-family="Nunito,sans-serif" font-weight="800">leer</text>
         </svg>
-        <span class="beer-label" id="beer-sip-label">0 Schlucke</span>
+        <span class="beer-label" id="beer-label">0 Schlucke</span>
       </div>
     </div>
 
     <div class="sep"></div>
 
-    <!-- Dice -->
     <div class="dice-area" id="dice-area"></div>
     <div class="controls">
       <button class="btn btn-primary" id="roll-btn" onclick="rollDice()">🎲 Würfeln!</button>
@@ -328,8 +178,18 @@ input[type=text]:focus, input[type=number]:focus { border-color: var(--accent); 
 
     <div class="sep"></div>
 
-    <!-- Result -->
-    <div class="card result-box" id="result-box">
+    <!-- Round Summary -->
+    <div id="summary-panel" style="display:none;">
+      <div class="card" style="margin-bottom:.75rem;">
+        <p class="label" style="margin-bottom:10px;">🍺 Wer trinkt wieviel?</p>
+        <div id="summary-rows"></div>
+      </div>
+      <div class="card">
+        <p class="label" style="margin-bottom:8px;">Warum?</p>
+        <div id="result-entries"></div>
+      </div>
+    </div>
+    <div id="result-empty" class="card">
       <p style="font-size:14px;color:var(--text2);font-weight:600;">Noch nicht gewürfelt …</p>
     </div>
 
@@ -353,364 +213,254 @@ input[type=text]:focus, input[type=number]:focus { border-color: var(--accent); 
         <p class="vote-status" id="vote-status"></p>
       </div>
     </div>
-
   </div>
 </div>
 
-<!-- ══ RULES ══ -->
+<!-- KICK MODAL -->
+<div id="kick-modal" class="modal-overlay" style="display:none;">
+  <div class="modal">
+    <h3>Tschüss! 👋</h3>
+    <p id="kick-msg"></p>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeKickModal()">Abbrechen</button>
+      <button class="btn" style="background:var(--danger);color:#fff;" onclick="confirmKick()">Rausschmeißen</button>
+    </div>
+  </div>
+</div>
+
+<!-- RULES -->
 <div id="overlay" class="overlay" style="display:none;" onclick="hideRules(event)">
   <div class="rules-sheet" onclick="event.stopPropagation()">
     <h2>Regelwerk 📋</h2>
     <div class="rule-entry"><strong>6</strong> → Werfer trinkt 1 pro gewürfelter 6</div>
     <div class="rule-entry"><strong>1</strong> → Rechter Nachbar trinkt 1 pro gewürfelter 1</div>
-    <div class="rule-entry"><strong>3er Pasch</strong> → Werfer trinkt 1 Schluck (restliche Würfel werden auch gewertet)</div>
+    <div class="rule-entry"><strong>3er Pasch</strong> → Werfer trinkt 1 Schluck</div>
     <div class="rule-entry"><strong>4er Pasch</strong> → Alle trinken so viele Schlucke wie die Augenzahl</div>
     <div class="rule-entry"><strong>5er Pasch</strong> → Augenzahl × 5 Schlucke frei verteilen</div>
-    <div class="rule-entry"><strong>6er Pasch</strong> → Alle exen! Wer zuerst „Schlödgen" ruft, darf jemanden zum weiteren Exen nominieren.</div>
-    <div class="rule-entry"><strong>Full House</strong> (Paar + Drilling) → Linker &amp; rechter Nachbar trinken je 4</div>
-    <div class="rule-entry"><strong>2× Drilling</strong> → Full House + nächste Spieler je 4 Strafe. Bei 3 Spielern: Bounce Back zum Werfer.</div>
-    <div class="rule-entry"><strong>3× Zweier-Pasch</strong> → Anzahl Spieler × 3 Schlucke frei verteilen</div>
-    <div class="rule-entry"><strong>4er Straße</strong> → Werfer 2, die nächsten 3 Spieler je +1 Schluck mehr</div>
-    <div class="rule-entry"><strong>5er Straße</strong> → Werfer 2, die nächsten 4 Spieler je +1 Schluck mehr</div>
-    <div class="rule-entry"><strong>6er Straße</strong> → Werfer 2, die nächsten 5 Spieler je +1 Schluck mehr</div>
-    <div class="rule-entry"><strong>Nur 1 Schluck gewürfelt</strong> → Werfer trinkt 5 Strafschlucke</div>
-    <div class="rule-entry"><strong>Würfel fällt auf den Boden</strong> → Exen oder Shot (0,5 % Zufalls-Chance)</div>
-    <div class="rule-entry"><strong>Vote</strong> → Absolute Mehrheit gewinnt. Verlierer trinkt 10 Schlucke.</div>
-    <div class="rule-entry"><strong>Ausstiegsklausel</strong> → Gruppe legt fest, was der Aussteiger trinken muss.</div>
+    <div class="rule-entry"><strong>6er Pasch</strong> → Alle exen! Wer zuerst „Schlödgen" ruft, nominiert jemanden.</div>
+    <div class="rule-entry"><strong>Full House</strong> (Paar + Drilling) → Linker &amp; rechter Nachbar je 4</div>
+    <div class="rule-entry"><strong>2× Drilling</strong> → Full House + nächste je 4 Strafe. Bei 3 Spielern: Bounce Back.</div>
+    <div class="rule-entry"><strong>3× Zweier-Pasch</strong> → Spieleranzahl × 3 Schlucke frei verteilen</div>
+    <div class="rule-entry"><strong>4er Straße</strong> → Werfer 2, nächste 3 Spieler je +1</div>
+    <div class="rule-entry"><strong>5er Straße</strong> → Werfer 2, nächste 4 Spieler je +1</div>
+    <div class="rule-entry"><strong>6er Straße</strong> → Werfer 2, nächste 5 Spieler je +1</div>
+    <div class="rule-entry"><strong>Nur 1 Schluck</strong> → Werfer trinkt 5 Strafschlucke</div>
+    <div class="rule-entry"><strong>Würfel auf dem Boden</strong> → Exen oder Shot (0,5% Zufall)</div>
+    <div class="rule-entry"><strong>Vote</strong> → Absolute Mehrheit gewinnt, Verlierer trinkt 10</div>
+    <div class="rule-entry"><strong>Ausstiegsklausel</strong> → Gruppe legt fest was der Aussteiger trinken muss</div>
     <button class="btn btn-ghost" onclick="hideRules()" style="width:100%;margin-top:1rem;">Schließen</button>
   </div>
 </div>
 
 <script>
-// ── Bubbles BG ──
-(function(){
-  const c=document.getElementById('bubbles');
-  for(let i=0;i<18;i++){
-    const b=document.createElement('div');
-    b.className='bubble';
-    const sz=20+Math.random()*60;
-    b.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;animation-duration:${8+Math.random()*14}s;animation-delay:${-Math.random()*15}s;`;
-    c.appendChild(b);
-  }
-})();
+(function(){const c=document.getElementById('bubbles');for(let i=0;i<18;i++){const b=document.createElement('div');b.className='bubble';const sz=20+Math.random()*60;b.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;animation-duration:${8+Math.random()*14}s;animation-delay:${-Math.random()*15}s;`;c.appendChild(b);}})();
 
-// ── State ──
-let players=[], sips=[], curIdx=0, rolled=false;
-let pendingDist=null, distTotal=0;
-let voteMap={}, voteNeeded=0;
-let editMode=-1;
-
+let players=[],kicked=[],sips=[],curIdx=0,rolled=false;
+let pendingDist=null,distTotal=0,voteMap={},voteNeeded=0,editMode=-1,pendingKickIdx=-1;
 const FACE=['⚀','⚁','⚂','⚃','⚄','⚅'];
 
-// ── Beer Glass ──
-function setBeerGlass(sipCount, maxSips) {
-  const fill = document.getElementById('beer-fill');
-  const foam = document.getElementById('beer-foam-rect');
-  const emptyText = document.getElementById('beer-empty-text');
-  const label = document.getElementById('beer-sip-label');
-  const glassH = 102; // y from 8 to 110
-  const glassTop = 8;
-  const glassBottom = 110;
-
-  let ratio = Math.min(sipCount / Math.max(maxSips, 1), 1);
-  if (sipCount === 0) ratio = 0;
-
-  const beerH = Math.round(glassH * ratio);
-  const foamH = sipCount > 0 ? Math.min(12, Math.round(beerH * 0.15) + 4) : 0;
-  const beerY = glassBottom - beerH;
-  const foamY = beerY - foamH;
-
-  fill.setAttribute('y', beerY);
-  fill.setAttribute('height', beerH);
-  foam.setAttribute('y', foamY);
-  foam.setAttribute('height', foamH);
-  emptyText.style.display = sipCount === 0 ? 'block' : 'none';
-
-  const s = sipCount === 1 ? 'Schluck' : 'Schlucke';
-  label.textContent = sipCount === 0 ? '0 Schlucke' : `${sipCount} ${s}`;
+// Beer – full at 20+ sips
+function setBeerGlass(n){
+  const MAX=20,fill=document.getElementById('beer-fill'),foam=document.getElementById('beer-foam'),empty=document.getElementById('beer-empty'),label=document.getElementById('beer-label');
+  const glassH=102,bottom=110;
+  const ratio=n<=0?0:Math.min(n/MAX,1);
+  const beerH=Math.round(glassH*ratio);
+  const foamH=n>0?Math.min(14,Math.max(4,Math.round(beerH*.13))):0;
+  fill.setAttribute('y',bottom-beerH);fill.setAttribute('height',beerH);
+  foam.setAttribute('y',bottom-beerH-foamH);foam.setAttribute('height',foamH);
+  empty.style.display=n<=0?'block':'none';
+  label.textContent=n<=0?'0 Schlucke':n>=99?'EXEN! 🍺':`${n} Schluck${n===1?'':'e'}`;
 }
 
-// ── Setup ──
-function addP(){
-  const pi=document.getElementById('player-inputs');
-  if(pi.children.length>=8)return;
-  const n=pi.children.length+1;
-  const d=document.createElement('div');d.className='player-row';
-  d.innerHTML=`<input type="text" value="Spieler ${n}"><button class="btn-icon" onclick="rmP(this)">×</button>`;
-  pi.appendChild(d);
-}
-function rmP(b){
-  const pi=document.getElementById('player-inputs');
-  if(pi.children.length<=2)return;
-  b.parentElement.remove();
-}
+function addP(){const pi=document.getElementById('player-inputs');if(pi.children.length>=8)return;const n=pi.children.length+1;const d=document.createElement('div');d.className='player-row';d.innerHTML=`<input type="text" value="Spieler ${n}"><button class="btn-icon" onclick="rmP(this)">×</button>`;pi.appendChild(d);}
+function rmP(b){const pi=document.getElementById('player-inputs');if(pi.children.length<=2)return;b.parentElement.remove();}
+
 function startGame(){
   const ins=document.querySelectorAll('#player-inputs input');
   players=Array.from(ins).map((e,i)=>e.value.trim()||'Spieler '+(i+1));
-  sips=players.map(()=>0); curIdx=0; rolled=false; editMode=-1;
+  sips=players.map(()=>0);kicked=players.map(()=>false);
+  curIdx=0;rolled=false;editMode=-1;
   document.getElementById('setup').style.display='none';
   document.getElementById('game').style.display='block';
-  setBeerGlass(0,0);
-  renderScoreboard(); setTurnLabel();
+  setBeerGlass(0);renderScoreboard();setTurnLabel();
   document.getElementById('dice-area').innerHTML='';
 }
-function resetGame(){
-  if(!confirm('Neues Spiel? Alle Punkte werden zurückgesetzt.'))return;
-  document.getElementById('game').style.display='none';
-  document.getElementById('setup').style.display='block';
-  document.getElementById('dist-panel').style.display='none';
-  document.getElementById('vote-panel').style.display='none';
-}
+function resetGame(){if(!confirm('Neues Spiel? Alle Punkte werden zurückgesetzt.'))return;document.getElementById('game').style.display='none';document.getElementById('setup').style.display='block';['dist-panel','vote-panel','summary-panel'].forEach(id=>document.getElementById(id).style.display='none');document.getElementById('result-empty').style.display='block';}
 
-// ── Scoreboard ──
 function renderScoreboard(){
-  const sb=document.getElementById('scoreboard');
-  const cols=players.length<=4?`repeat(${Math.min(players.length,4)},1fr)`:'repeat(4,1fr)';
-  sb.style.gridTemplateColumns=cols;
-  sb.innerHTML=players.map((p,i)=>{
+  document.getElementById('scoreboard').innerHTML=players.map((p,i)=>{
+    if(kicked[i])return`<div class="score-card kicked"><span class="score-name" style="text-decoration:line-through;color:var(--text3);">${p}</span><span style="font-size:12px;color:var(--danger);font-weight:800;">raus 👋</span><span class="score-num" style="font-size:16px;color:var(--text3);">${sips[i]}</span><span class="score-unit">Schl.</span></div>`;
     const isEdit=editMode===i;
-    return `<div class="score-card ${i===curIdx?'active':''}" onclick="toggleEdit(${i})">
-      <div>
-        <div class="score-name">${p}${i===curIdx?'<span class="score-badge">dran</span>':''}</div>
-      </div>
-      <div class="score-right">
-        ${isEdit
-          ? `<input type="number" class="edit-sips" id="edit-input-${i}" value="${sips[i]}" min="0"
-               onclick="event.stopPropagation()"
-               onchange="applySipEdit(${i})"
-               onkeydown="if(event.key==='Enter')applySipEdit(${i})">
-             <button class="btn-icon btn-sm" onclick="event.stopPropagation();applySipEdit(${i})" style="font-size:12px;">✓</button>`
-          : `<span class="score-num">${sips[i]}</span><span class="score-unit">Schl.</span>`
-        }
-      </div>
+    return`<div class="score-card ${i===curIdx?'active':''}" onclick="toggleEdit(${i})">
+      <span class="score-name">${p}${i===curIdx?'<span class="score-badge">dran</span>':''}</span>
+      ${isEdit
+        ?`<input type="number" class="edit-sips" id="ei-${i}" value="${sips[i]}" min="0" onclick="event.stopPropagation()" onchange="applySipEdit(${i})" onkeydown="if(event.key==='Enter')applySipEdit(${i})"><button class="btn-icon btn-sm" onclick="event.stopPropagation();applySipEdit(${i})" style="font-size:12px;">✓</button>`
+        :`<span class="score-num">${sips[i]}</span><span class="score-unit">Schl.</span><button class="kick-btn" onclick="event.stopPropagation();openKickModal(${i})">Raus 👋</button>`
+      }
     </div>`;
   }).join('');
-  if(editMode>=0){const inp=document.getElementById(`edit-input-${editMode}`);if(inp){inp.focus();inp.select();}}
+  if(editMode>=0){const inp=document.getElementById(`ei-${editMode}`);if(inp){inp.focus();inp.select();}}
 }
-function toggleEdit(i){editMode=(editMode===i?-1:i);renderScoreboard();}
-function applySipEdit(i){
-  const inp=document.getElementById(`edit-input-${i}`);if(!inp)return;
-  sips[i]=Math.max(0,parseInt(inp.value)||0);
-  editMode=-1;renderScoreboard();
-}
-function addSips(idx,n){if(idx>=0&&idx<players.length)sips[idx]+=n;}
+function toggleEdit(i){if(kicked[i])return;editMode=(editMode===i?-1:i);renderScoreboard();}
+function applySipEdit(i){const inp=document.getElementById(`ei-${i}`);if(!inp)return;sips[i]=Math.max(0,parseInt(inp.value)||0);editMode=-1;renderScoreboard();}
+function addSips(idx,n){if(idx>=0&&idx<players.length&&!kicked[idx])sips[idx]+=n;}
 function setTurnLabel(){document.getElementById('turn-label').textContent=players[curIdx]+' ist dran 🎲';}
+function activePlayers(){return players.filter((_,i)=>!kicked[i]);}
+function advanceTurn(){let a=0;do{curIdx=(curIdx+1)%players.length;a++;}while(kicked[curIdx]&&a<players.length);}
 
-// ── Roll ──
+function openKickModal(i){pendingKickIdx=i;document.getElementById('kick-msg').innerHTML=`<strong style="color:var(--text);">${players[i]}</strong> wird rausgeschmissen und muss jetzt die <strong style="color:var(--accent);">Ausstiegsklausel</strong> ausführen!`;document.getElementById('kick-modal').style.display='flex';}
+function closeKickModal(){document.getElementById('kick-modal').style.display='none';pendingKickIdx=-1;}
+function confirmKick(){if(pendingKickIdx<0)return;kicked[pendingKickIdx]=true;if(pendingKickIdx===curIdx)advanceTurn();closeKickModal();renderScoreboard();}
+
 function rollDice(){
   if(rolled)return;
   const rb=document.getElementById('roll-btn');rb.disabled=true;
   document.getElementById('next-btn').style.display='none';
-  document.getElementById('dist-panel').style.display='none';
-  document.getElementById('vote-panel').style.display='none';
+  ['dist-panel','vote-panel','summary-panel'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('result-empty').style.display='block';
   voteMap={};editMode=-1;
-
   const area=document.getElementById('dice-area');
   area.innerHTML=Array.from({length:6},()=>`<div class="die rolling">${FACE[Math.floor(Math.random()*6)]}</div>`).join('');
-
-  // Longer animation = wait 900ms
   setTimeout(()=>{
     const floorDrop=Math.random()<0.005;
     const dice=Array.from({length:6},()=>Math.ceil(Math.random()*6));
     rolled=true;rb.disabled=false;
-    const{res,hl,dist,totalSips}=evaluate(dice,floorDrop);
-    renderDice(dice,hl);
-    showResults(res);
-    // Update beer glass: show sips from this throw, max = 12
-    setBeerGlass(totalSips, Math.max(totalSips, 12));
-    if(dist){startDist(dist);}
-    else{renderScoreboard();document.getElementById('next-btn').style.display='inline-flex';setupVote();}
-  },900);
-}
-function renderDice(dice,hl){
-  document.getElementById('dice-area').innerHTML=dice.map((v,i)=>
-    `<div class="die ${hl.includes(i)?'hl':''}">${FACE[v-1]}</div>`).join('');
+    const{res,hl,dist,sipMap}=evaluate(dice,floorDrop);
+    // hide all, then reveal sequentially
+    area.innerHTML=dice.map((v,i)=>`<div class="die hidden" id="die-${i}">${FACE[v-1]}</div>`).join('');
+    dice.forEach((_,i)=>{
+      setTimeout(()=>{
+        const el=document.getElementById(`die-${i}`);if(!el)return;
+        el.classList.remove('hidden');el.classList.add('reveal');
+        if(hl.includes(i))el.classList.add('hl');
+      },i*180);
+    });
+    setTimeout(()=>{
+      const total=Object.values(sipMap).filter((_,i)=>!kicked[i]).reduce((a,b)=>a+b,0);
+      showResults(res,sipMap);
+      setBeerGlass(total);
+      if(dist){startDist(dist);}
+      else{renderScoreboard();document.getElementById('next-btn').style.display='inline-flex';setupVote();}
+    },6*180+300);
+  },3000);
 }
 
-// ── Evaluate ──
 function evaluate(dice,floorDrop){
-  const cur=curIdx, right=(curIdx+1)%players.length, left=(curIdx-1+players.length)%players.length;
+  const cur=curIdx,right=(curIdx+1)%players.length,left=(curIdx-1+players.length)%players.length;
   const res=[],hl=[];let dist=null;
-  let totalSips=0;
+  const sipMap={};players.forEach((_,i)=>{sipMap[i]=0;});
+  function give(idx,n){if(idx>=0&&idx<players.length&&!kicked[idx]){addSips(idx,n);sipMap[idx]=(sipMap[idx]||0)+n;}}
 
-  if(floorDrop){
-    res.push({t:`💥 Würfel auf dem Boden! ${players[cur]} muss exen oder einen Shot trinken!`,c:'warn'});
-    totalSips=99;
-    return{res,hl,dist,totalSips};
-  }
+  if(floorDrop){res.push({t:`💥 Würfel auf dem Boden! ${players[cur]} muss exen oder einen Shot!`,c:'warn'});give(cur,99);return{res,hl,dist,sipMap};}
 
-  const counts={};
-  dice.forEach((v,i)=>{if(!counts[v])counts[v]=[];counts[v].push(i);});
+  const counts={};dice.forEach((v,i)=>{if(!counts[v])counts[v]=[];counts[v].push(i);});
+  const tripleVals=Object.keys(counts).filter(v=>counts[v].length===3);
 
   // 6er Pasch
   if(Object.keys(counts).length===1&&Object.values(counts)[0].length===6){
     const v=parseInt(Object.keys(counts)[0]);
-    players.forEach((_,i)=>addSips(i,99));
+    players.forEach((_,i)=>{if(!kicked[i]){addSips(i,99);sipMap[i]=99;}});
     res.push({t:`🎉 6er Pasch (${v}er)! Alle exen!`,c:'bold'});
     res.push({t:'Wer zuerst „Schlödgen" ruft, nominiert jemanden zum weiteren Exen.',c:''});
-    dice.forEach((_,i)=>hl.push(i));
-    totalSips=99;
-    return{res,hl,dist,totalSips};
+    dice.forEach((_,i)=>hl.push(i));return{res,hl,dist,sipMap};
   }
-
   // 2× Drilling
-  const tripleVals=Object.keys(counts).filter(v=>counts[v].length===3);
   if(tripleVals.length===2){
-    addSips(left,4);addSips(right,4);totalSips+=8;
-    if(players.length===3){addSips(cur,4);totalSips+=4;res.push({t:`Full House (2× Drilling)! ${players[left]} & ${players[right]} trinken je 4. Bounce Back – ${players[cur]} auch 4!`,c:'bold'});}
-    else{const nx=(curIdx+2)%players.length;addSips(nx,4);totalSips+=4;res.push({t:`Full House (2× Drilling)! ${players[left]} & ${players[right]} trinken je 4. Nächster auch 4 Strafe.`,c:'bold'});}
-    dice.forEach((_,i)=>hl.push(i));
-    return{res,hl,dist,totalSips};
+    give(left,4);give(right,4);
+    if(players.length-kicked.filter(Boolean).length===3){give(cur,4);res.push({t:`Full House (2× Drilling)! ${players[left]} & ${players[right]} je 4. Bounce Back: ${players[cur]} auch 4!`,c:'bold'});}
+    else{const nx=(curIdx+2)%players.length;give(nx,4);res.push({t:`Full House (2× Drilling)! ${players[left]} & ${players[right]} je 4. Nächster auch 4 Strafe.`,c:'bold'});}
+    dice.forEach((_,i)=>hl.push(i));return{res,hl,dist,sipMap};
   }
-
   // 3× Zweier-Pasch
-  const pairVals=Object.keys(counts).filter(v=>counts[v].length===2);
-  if(pairVals.length===3){
-    const total=players.length*3;totalSips=total;
-    res.push({t:`3× Zweier-Pasch! ${total} Schlucke frei verteilen (${players.length}×3).`,c:'bold'});
+  if(Object.keys(counts).filter(v=>counts[v].length===2).length===3){
+    const total=activePlayers().length*3;
+    res.push({t:`3× Zweier-Pasch! ${total} Schlucke frei verteilen (${activePlayers().length}×3).`,c:'bold'});
     dist={total,label:`${total} Schlucke frei verteilen`};
-    dice.forEach((_,i)=>hl.push(i));
-    return{res,hl,dist,totalSips};
+    dice.forEach((_,i)=>hl.push(i));return{res,hl,dist,sipMap};
   }
-
   // 5er Pasch
   const fiveKey=Object.keys(counts).find(v=>counts[v].length===5);
   if(fiveKey){
-    const n=parseInt(fiveKey)*5;totalSips=n;
-    counts[fiveKey].forEach(i=>hl.push(i));
+    const n=parseInt(fiveKey)*5;counts[fiveKey].forEach(i=>hl.push(i));
     res.push({t:`5er Pasch (${fiveKey}er)! ${n} Schlucke frei verteilen.`,c:'bold'});
     dist={total:n,label:`${n} Schlucke verteilen`};
-    dice.forEach((v,i)=>{if(!hl.includes(i)){if(v===6){addSips(cur,1);totalSips++;res.push({t:`Sechs: ${players[cur]} +1 Schluck.`,c:''});}if(v===1){addSips(right,1);totalSips++;res.push({t:`Eins: ${players[right]} +1 Schluck.`,c:''});}}});
-    return{res,hl,dist,totalSips};
+    dice.forEach((v,i)=>{if(!hl.includes(i)){if(v===6){give(cur,1);res.push({t:`Sechs: ${players[cur]} +1.`,c:''});}if(v===1){give(right,1);res.push({t:`Eins: ${players[right]} +1.`,c:''});}}});
+    return{res,hl,dist,sipMap};
   }
-
   // 4er Pasch
   const fourKey=Object.keys(counts).find(v=>counts[v].length===4);
-  if(fourKey){
-    const n=parseInt(fourKey);
-    players.forEach((_,i)=>addSips(i,n));totalSips+=n*players.length;
-    res.push({t:`4er Pasch (${fourKey}er)! Alle trinken ${n} Schlucke.`,c:'bold'});
-    counts[fourKey].forEach(i=>hl.push(i));
-  }
-
+  if(fourKey){const n=parseInt(fourKey);players.forEach((_,i)=>give(i,n));res.push({t:`4er Pasch (${fourKey}er)! Alle trinken ${n} Schlucke.`,c:'bold'});counts[fourKey].forEach(i=>hl.push(i));}
   // 3er Pasch
   const threeKey=Object.keys(counts).find(v=>counts[v].length===3);
-  if(threeKey&&!fourKey){
-    addSips(cur,1);totalSips++;
-    res.push({t:`3er Pasch (${threeKey}er)! ${players[cur]} trinkt 1 Schluck.`,c:'bold'});
-    counts[threeKey].forEach(i=>hl.push(i));
-  }
-
+  if(threeKey&&!fourKey){give(cur,1);res.push({t:`3er Pasch (${threeKey}er)! ${players[cur]} trinkt 1 Schluck.`,c:'bold'});counts[threeKey].forEach(i=>hl.push(i));}
   // Straße
   if(!fiveKey&&!fourKey){
-    const unique=[...new Set(dice)].sort((a,b)=>a-b);
-    let best=[],run=[unique[0]];
+    const unique=[...new Set(dice)].sort((a,b)=>a-b);let best=[],run=[unique[0]];
     for(let i=1;i<unique.length;i++){if(unique[i]===unique[i-1]+1)run.push(unique[i]);else{if(run.length>best.length)best=run;run=[unique[i]];}}
     if(run.length>best.length)best=run;
     if(best.length>=4){
-      const sl=best.length;
-      const parts=[`${players[cur]} trinkt 2`];
-      addSips(cur,2);totalSips+=2;
-      for(let k=1;k<sl;k++){const nb=(curIdx+k)%players.length;addSips(nb,k+2);totalSips+=k+2;parts.push(`${players[nb]} trinkt ${k+2}`);}
+      const sl=best.length,parts=[`${players[cur]} trinkt 2`];give(cur,2);
+      for(let k=1;k<sl;k++){const nb=(curIdx+k)%players.length;give(nb,k+2);parts.push(`${players[nb]} trinkt ${k+2}`);}
       res.push({t:`${sl}er Straße! ${parts.join(', ')} Schlucke.`,c:'bold'});
       best.forEach(v=>{const idx=dice.indexOf(v);if(idx>=0&&!hl.includes(idx))hl.push(idx);});
     }
   }
-
   // Classic Full House
   const hasPair=Object.keys(counts).find(v=>counts[v].length===2);
   const hasTrip=Object.keys(counts).find(v=>counts[v].length===3);
-  if(hasPair&&hasTrip&&tripleVals.length<2&&!fourKey&&!fiveKey){
-    addSips(left,4);addSips(right,4);totalSips+=8;
-    res.push({t:`Full House! ${players[left]} & ${players[right]} trinken je 4 Schlucke.`,c:'bold'});
-    dice.forEach((_,i)=>{if(!hl.includes(i))hl.push(i);});
-  }
-
-  // Einzel 6 / 1
+  if(hasPair&&hasTrip&&tripleVals.length<2&&!fourKey&&!fiveKey){give(left,4);give(right,4);res.push({t:`Full House! ${players[left]} & ${players[right]} je 4 Schlucke.`,c:'bold'});dice.forEach((_,i)=>{if(!hl.includes(i))hl.push(i);});}
+  // Einzel
   let self6=0,right1=0;
   dice.forEach((v,i)=>{if(!hl.includes(i)){if(v===6){self6++;hl.push(i);}if(v===1){right1++;hl.push(i);}}});
-  if(self6>0){addSips(cur,self6);totalSips+=self6;res.push({t:`${self6}× Sechs: ${players[cur]} trinkt ${self6} Schluck${self6>1?'e':''}.`,c:''});}
-  if(right1>0){addSips(right,right1);totalSips+=right1;res.push({t:`${right1}× Eins: ${players[right]} trinkt ${right1} Schluck${right1>1?'e':''}.`,c:''});}
-
-  // Straf-Regel
+  if(self6>0){give(cur,self6);res.push({t:`${self6}× Sechs: ${players[cur]} trinkt ${self6} Schluck${self6>1?'e':''}.`,c:''});}
+  if(right1>0){give(right,right1);res.push({t:`${right1}× Eins: ${players[right]} trinkt ${right1} Schluck${right1>1?'e':''}.`,c:''});}
+  // Strafe
   if(!fourKey&&!fiveKey&&!hasPair&&!hasTrip&&res.length>0){
-    const totalG=res.reduce((s,r)=>{const m=r.t.match(/trinkt (\d+)/);return s+(m?parseInt(m[1]):0);},0);
-    if(totalG===1){addSips(cur,5);totalSips+=5;res.push({t:`⚠️ Nur 1 Schluck gewürfelt – ${players[cur]} trinkt 5 Strafschlucke!`,c:'warn'});}
+    const tot=Object.values(sipMap).reduce((a,b)=>a+b,0);
+    if(tot===1){give(cur,5);res.push({t:`⚠️ Nur 1 Schluck – ${players[cur]} trinkt 5 Strafschlucke!`,c:'warn'});}
   }
-
   if(res.length===0)res.push({t:'Nichts – kein Schluck für niemanden! 🙌',c:''});
-  return{res,hl,dist,totalSips};
+  return{res,hl,dist,sipMap};
 }
 
-function showResults(res){
-  document.getElementById('result-box').innerHTML=res.map(r=>`<p class="result-item ${r.c||''}">${r.t}</p>`).join('');
+function showResults(res,sipMap){
+  document.getElementById('result-empty').style.display='none';
+  document.getElementById('summary-panel').style.display='block';
+  // Summary rows: players with sips > 0
+  const rows=players.map((p,i)=>{
+    const n=sipMap[i]||0;if(n===0||kicked[i])return null;
+    // find relevant reason lines
+    const reasons=res.filter(r=>r.t.includes(p)||(r.c==='bold'||r.c==='warn')).map(r=>r.t).filter((v,j,a)=>a.indexOf(v)===j).slice(0,2);
+    return{p,n,reasons};
+  }).filter(Boolean);
+  document.getElementById('summary-rows').innerHTML=rows.length===0
+    ?'<p style="font-size:14px;color:var(--text2);font-weight:600;padding:6px 0;">Niemand trinkt! 🙌</p>'
+    :rows.map(r=>`<div class="summary-player-row">
+        <div class="summary-left"><div class="summary-total">${r.n>=99?'EX':r.n}</div><div class="summary-unit">${r.n>=99?'exen':'Schl.'}</div></div>
+        <div class="summary-divider"></div>
+        <div class="summary-right">
+          <div class="summary-name">${r.p}</div>
+          ${r.reasons.map(rr=>`<div class="summary-reason">→ ${rr}</div>`).join('')}
+        </div>
+      </div>`).join('');
+  document.getElementById('result-entries').innerHTML=res.map(r=>`<p class="result-item ${r.c||''}">${r.t}</p>`).join('');
 }
 
-// ── Distribute ──
 function startDist(d){
   pendingDist=d;distTotal=d.total;
   document.getElementById('dist-title').textContent=d.label;
-  document.getElementById('dist-rows').innerHTML=players.map((p,i)=>`
-    <div class="dist-row">
-      <label>${p}</label>
-      <input type="number" class="dist-num" id="di-${i}" min="0" value="0" oninput="updateDistRem()">
-    </div>`).join('');
-  updateDistRem();
-  document.getElementById('dist-panel').style.display='block';
+  document.getElementById('dist-rows').innerHTML=players.map((p,i)=>kicked[i]?'':
+    `<div class="dist-row"><label>${p}</label><input type="number" class="dist-num" id="di-${i}" min="0" value="0" oninput="updateDistRem()"></div>`).join('');
+  updateDistRem();document.getElementById('dist-panel').style.display='block';
 }
-function updateDistRem(){
-  let used=0;players.forEach((_,i)=>{used+=parseInt(document.getElementById(`di-${i}`).value)||0;});
-  const rem=distTotal-used;
-  document.getElementById('dist-rem').textContent=`Noch zu verteilen: ${rem}`;
-  document.getElementById('dist-confirm').disabled=rem!==0;
-}
-function confirmDist(){
-  players.forEach((_,i)=>{addSips(i,parseInt(document.getElementById(`di-${i}`).value)||0);});
-  pendingDist=null;
-  document.getElementById('dist-panel').style.display='none';
-  renderScoreboard();
-  document.getElementById('next-btn').style.display='inline-flex';
-  setupVote();
-}
+function updateDistRem(){let used=0;players.forEach((_,i)=>{const el=document.getElementById(`di-${i}`);if(el)used+=parseInt(el.value)||0;});const rem=distTotal-used;document.getElementById('dist-rem').textContent=`Noch zu verteilen: ${rem}`;document.getElementById('dist-confirm').disabled=rem!==0;}
+function confirmDist(){players.forEach((_,i)=>{const el=document.getElementById(`di-${i}`);if(el)addSips(i,parseInt(el.value)||0);});pendingDist=null;document.getElementById('dist-panel').style.display='none';renderScoreboard();document.getElementById('next-btn').style.display='inline-flex';setupVote();}
 
-// ── Vote ──
-function setupVote(){
-  voteMap={};voteNeeded=Math.floor(players.length/2)+1;
-  document.getElementById('vote-chips').innerHTML=players.map((p,i)=>`<button class="chip" id="vc-${i}" onclick="castVote(${i})">${p}</button>`).join('');
-  document.getElementById('vote-status').textContent='';
-  document.getElementById('vote-panel').style.display='block';
-}
-function castVote(i){
-  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));
-  document.getElementById(`vc-${i}`).classList.add('sel');
-  voteMap[i]=(voteMap[i]||0)+1;
-  const max=Math.max(...Object.values(voteMap));
-  const vs=document.getElementById('vote-status');
-  if(max>=voteNeeded){
-    const w=parseInt(Object.keys(voteMap).find(k=>voteMap[k]===max));
-    players.forEach((_,j)=>{if(j!==w)addSips(j,10);});
-    vs.textContent=`Mehrheit! ${players[w]} gewinnt – alle anderen trinken 10 Schlucke.`;
-    vs.style.color='var(--accent2)';
-    renderScoreboard();
-  } else {
-    vs.textContent=`${Object.values(voteMap).reduce((a,b)=>a+b,0)} Stimme(n) – ${voteNeeded} für Mehrheit nötig.`;
-  }
-}
+function setupVote(){voteMap={};voteNeeded=Math.floor(activePlayers().length/2)+1;document.getElementById('vote-chips').innerHTML=players.map((p,i)=>kicked[i]?'':`<button class="chip" id="vc-${i}" onclick="castVote(${i})">${p}</button>`).join('');document.getElementById('vote-status').textContent='';document.getElementById('vote-panel').style.display='block';}
+function castVote(i){document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));document.getElementById(`vc-${i}`).classList.add('sel');voteMap[i]=(voteMap[i]||0)+1;const max=Math.max(...Object.values(voteMap));const vs=document.getElementById('vote-status');if(max>=voteNeeded){const w=parseInt(Object.keys(voteMap).find(k=>voteMap[k]===max));players.forEach((_,j)=>{if(j!==w&&!kicked[j])addSips(j,10);});vs.textContent=`Mehrheit! ${players[w]} gewinnt – alle anderen trinken 10 Schlucke.`;vs.style.color='var(--accent2)';renderScoreboard();}else{vs.textContent=`${Object.values(voteMap).reduce((a,b)=>a+b,0)} Stimme(n) – ${voteNeeded} für Mehrheit nötig.`;}}
 
-// ── Next ──
-function nextTurn(){
-  curIdx=(curIdx+1)%players.length;
-  rolled=false;voteMap={};editMode=-1;
-  document.getElementById('next-btn').style.display='none';
-  document.getElementById('dist-panel').style.display='none';
-  document.getElementById('vote-panel').style.display='none';
-  document.getElementById('dice-area').innerHTML='';
-  document.getElementById('result-box').innerHTML='<p style="font-size:14px;color:var(--text2);font-weight:600;">Noch nicht gewürfelt …</p>';
-  setBeerGlass(0,0);
-  renderScoreboard();setTurnLabel();
-}
+function nextTurn(){advanceTurn();rolled=false;voteMap={};editMode=-1;['next-btn'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});['dist-panel','vote-panel','summary-panel'].forEach(id=>document.getElementById(id).style.display='none');document.getElementById('result-empty').style.display='block';document.getElementById('dice-area').innerHTML='';setBeerGlass(0);renderScoreboard();setTurnLabel();}
 
-// ── Rules ──
 function showRules(){document.getElementById('overlay').style.display='flex';}
 function hideRules(e){if(!e||e.target===document.getElementById('overlay'))document.getElementById('overlay').style.display='none';}
 </script>
